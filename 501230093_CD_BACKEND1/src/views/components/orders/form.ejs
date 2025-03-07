@@ -1,230 +1,202 @@
 <div class="content">
     <div class="container-fluid">
-        <h4 class="page-title">
-
-
-            <% if (mode==="Create" ) {%>
-                Tao san pham moi
-                <%}%>
-
-
-
-                    <% if (mode==="Update" ) {%>
-                        cap nhat san pham
-                        <%}%>
-
-
-
-                            <% if (mode==="Delete" ) {%>
-                                Bạn thật sự muốn xóa sản phẩm <%=category?.name%>
-                                    <%}%>
-
-
-
-        </h4>
-        <div class="card">
-            <div class="card">
-
-                <div class="card-body">
-                    <% if (mode==="Create" ) {%>
-                        <form action="/products/create" method="post">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h4 class="card-title">
+                            <i class="la la-shopping-cart"></i>
+                            <% if (mode==="Create" ) {%>
+                                Tạo Đơn Hàng Mới
                             <%}%>
+                        </h4>
+                    </div>
 
+                    <div class="card-body">
+                        <form action="/orders/create" method="post">
+                            <!-- Discount Section -->
+                            <div class="row mb-4">
+                                <div class="col-md-6">
+                                    <div class="form-group <%=err?.discount && 'has-error'%>">
+                                        <label for="discount">Mức Giảm Giá (%)</label>
+                                        <input name="discount" type="number" min="0" max="80" 
+                                            class="form-control" id="discount" 
+                                            placeholder="Nhập mức giảm giá (0-80)">
+                                        <small class="text-danger"><%=err?.discount%></small>
+                                    </div>
+                                </div>
+                            </div>
 
-                                <% if (mode==="Update" ) {%>
-                                    <form action="/products/update/<%=product?._id%>" method="post">
-                                        <!-- <div class="form-group hide">
-                                            <input name="id" type="text" value="<%=product?._id%>" id="id"
-                                                placeholder="Nhập mã sản phẩm ">
-                                        </div> -->
-                                        <%}%>
-
-
-
-                                            <% if (mode==="Delete" ) {%>
-                                                <form action="/products/delete/<%=product._id%>" method="post">
-                                                    <div class="form-group hide">
-                                                        <input name="id" type="text" value="<%=product?._id%>" id="id"
-                                                            placeholder="Nhập mã sản phẩm ">
+                            <!-- Products Section -->
+                            <div class="card mb-4">
+                                <div class="card-header bg-light">
+                                    <h5 class="mb-0">Danh Sách Sản Phẩm</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div id="listProduct">
+                                        <div class="product-item p-3 mb-3 border rounded">
+                                            <div class="row align-items-center">
+                                                <div class="col-md-4">
+                                                    <select class="form-control" id="itemSelect" name="productSelect">
+                                                        <option value="">Chọn sản phẩm</option>
+                                                        <% products.forEach(function(product){ %>
+                                                            <option value="<%=product._id%>-<%=product.name%>">
+                                                                <%=product.name%>
+                                                            </option>
+                                                        <% }) %>
+                                                    </select>
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <input type="number" name="quantity" min="1"
+                                                        class="form-control" placeholder="Số lượng">
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <input type="text" name="itemPrice" 
+                                                        class="form-control" placeholder="Giá" disabled>
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <select class="form-control" id="itemColor" name="itemColor">
+                                                        <option value="">Màu sắc</option>
+                                                    </select>
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <div class="btn-group">
+                                                        <button type="button" class="btn btn-success btn-sm">
+                                                            <i class="la la-plus"></i>
+                                                        </button>
+                                                        <button type="button" class="btn btn-danger btn-sm">
+                                                            <i class="la la-trash"></i>
+                                                        </button>
                                                     </div>
-                                                    <%}%>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card mb-4">
+                                <div class="card-header bg-light">
+                                    <h5 class="mb-0">Địa chỉ giao hàng</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div id="billingAddress">
+                                        
+                                        <div class="product-item p-3 mb-3 border rounded">
+                                          <div>
+                                            <label for="billingname">tên khách hàng</label>
+                                              <div class="row align-items-center">
+                                                <div class="col-md-2">
+                                                    <input type="text" name="billingname" min="1" class="form-control" placeholder="Nhập tên khách hàng "
+                                                        id="billingname">
+                                                </div>
+                                              </div>
+                                          </div>
+                                          <div class="mt-5">
+                                            <label for="billingEmail">Email</label>
+                                              <div class="row align-items-center">
+                                                <div class="col-md-2">
+                                                    <input type="text" name="billingEmail" min="1" class="form-control" placeholder="Nhập Email"
+                                                        id="billingEmail">
+                                                </div>
+                                              </div>
+                                          </div>
+                                          <div class="mt-5">
+                                            <label for="billingphoneNumber">Số điện thoại</label>
+                                              <div class="row align-items-center">
+                                                <div class="col-md-2">
+                                                    <input type="text" name="billingphoneNumber" min="1" class="form-control" placeholder="Nhập số điện thoại "
+                                                        id="billingphoneNumber">
+                                                </div>
+                                              </div>
+                                          </div>
+                                        <div class="mt-5">
+                                            <label for="billingAddress">Địa chỉ</label>
+                                            <div class="row align-items-center">
+                                                <div class="col-md-2">
+                                                    <input type="text" name="billingAddress" min="1" class="form-control" placeholder="Nhập Địa  chỉ  "
+                                                        id="billingAddress">
+                                                </div>
+                                            </div>
+                                        </div>
+                                          <div class="mt-5">
+                                            <label for="billingDistrict">Quận/Huyện </label>
+                                              <div class="row align-items-center">
+                                                <div class="col-md-2">
+                                                    <input type="text" name="billingDistrict" min="1" class="form-control" placeholder="Nhập Quận/Huyện  "
+                                                        id="billingDistrict">
+                                                </div>
+                                              </div>
+                                          </div>
+                                          <div class="mt-5">
+                                            <label for="billingCity">Thành Phố <label>
+                                              <div class="row align-items-center">
+                                                <div class="col-md-2">
+                                                    <input type="text" name="billingCity" min="1" class="form-control" placeholder="Nhập Thành Phố "
+                                                        id="billingCity">
+                                                </div>
+                                              </div>
+                                          </div>
+                                          
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
 
-
-
-                                                        <div
-                                                            class="form-group <%=err?.code && 'has-error has-feedback'%> ">
-                                                            <label for="code">Mã sản phẩm </label>
-                                                            <input name="code" type="text" value="<%=product ?.code%>"
-                                                                class="form-control" id="code"
-                                                                placeholder="Nhập mã sản phẩm" <% if (mode==='Delete' )
-                                                                { %> disabled <% } %>>
-                                                                <small id="emailHelp"
-                                                                    class="form-text text-muted text-danger">
-                                                                    <%=err?.code%>
-                                                                </small>
-                                                        </div>
-                                                        <div
-                                                            class="form-group <%=err.name && 'has-error has-feedback'%>">
-                                                            <label for="name">Tên sản phẩm </label>
-                                                            <input value="<%=product?.name%>" name="name" type="text"
-                                                                class="form-control" id="name"
-                                                                placeholder="Nhập tên sản phẩm  " <% if (mode==='Delete'
-                                                                ) { %> disabled <% } %>
-
-                                                                >
-                                                                <small id="emailHelp"
-                                                                    class="form-text text-muted text-danger">
-                                                                    <%=err?.name%>
-                                                                </small>
-                                                        </div>
-                                                        <div
-                                                            class="form-group <%=err.searchString && 'has-error has-feedback'%>">
-                                                            <label for="searchString">Chuỗi tìm kiếm </label>
-                                                            <input value="<%=product?.searchString%>"
-                                                                name="searchString" type="text" class="form-control"
-                                                                id="name" placeholder="Nhập tên chuỗi tìm kím  " <% if
-                                                                (mode==='Delete' ) { %> disabled <% } %>
-
-                                                                >
-                                                                <small id="emailHelp"
-                                                                    class="form-text text-muted text-danger">
-                                                                    <%=err?.searchString%>
-                                                                </small>
-                                                        </div>
-                                                        <div
-                                                            class="form-group <%=err.price && 'has-error has-feedback'%>">
-                                                            <label for="price">Giá</label>
-                                                            <input value="<%=product?.price%>" name="price" type="number"
-                                                                class="form-control" id="price" placeholder="Nhập giá  "
-                                                                <% if (mode==='Delete' ) { %> disabled <% } %>
-
-                                                                >
-                                                                <small id="emailHelp"
-                                                                    class="form-text text-muted text-danger">
-                                                                    <%=err?.price%>
-                                                                </small>
-                                                        </div>
-                                                        <div
-                                                            class="form-group <%=err.image && 'has-error has-feedback'%>">
-                                                            <label for="image">Link hình ảnh </label>
-                                                            <input value="<%=product?.images?.[0] || ''%>" name="image" type="text"
-                                                                class="form-control" id="image"
-                                                                placeholder="Nhập link hình ảnh" <% if (mode==='Delete' ) {
-                                                                %> disabled <% } %>>
-                                                            <% if(product?.images?.[0]) { %>
-                                                            <img src="<%=product.images[0]%>" alt="<%=product.name%>" style="max-width: 200px; margin-top: 10px;">
-                                                            <% } %>
-                                                            <small id="emailHelp"
-                                                                class="form-text text-muted text-danger">
-                                                                <%=err?.image%>
-                                                            </small>
-                                                        </div>
-                                                        <div
-                                                            class="form-group <%=err.size && 'has-error has-feedback'%>">
-                                                            <label style="color: black;" for="">Size: </label>
-                                                            <% sizes.forEach(function(size,index){%>
-                                                                <label class="form-check-label">
-                                                                    <input class="form-check-input" type="checkbox"
-                                                                    name="sizes"
-                                                                        value="<%=size%>">
-                                                                    <span class="form-check-sign">
-                                                                        <%=size%>
-                                                                    </span>
-                                                                </label>
-
-                                                                <%}) %>
-
-
-                                                                    <small class="form-text text-muted text-danger">
-                                                                        <%=err?.size%>
-                                                                    </small>
-
-                                                        </div>
-                                                        <div
-                                                        class="form-group flex <%=err.color && 'has-error has-feedback'%>">
-                                                        <label>Màu sắc:</label>
-                                                        <div class="d-flex flex-wrap">
-                                                        <% colors.forEach(function(color,index){%>
-                                                            <label class="form-check-label">
-                                                                <input class="form-check-input" type="checkbox" name="color"
-                                                                    name="color" 
-                                                                    value="<%=color%>"
-                                                                    <% if(product?.color?.includes(color)) { %>checked<% } %>>
-                                                                <span class="product-checkbox-label bg-<%=color%>">
-                                                                    <%=color%>
-                                                                </span>
-                                                            </label>
-                                                            <%}) %>
-                                                        </div>
-                                                        <small class="form-text text-muted text-danger">
-                                                            <%=err?.color%>
-                                                        </small>
-                                                    </div>
-                                                    <div
-                                                            class="form-group <%=err.active && 'has-error has-feedback'%>">
-                                                            <label for="image">Active</label>
-                                                            <input type="checkbox" checked data-toggle="toggle" name="active" data-onstyle="default">
-                                                        </div>
-                                                    <div
-                                                            class="form-group <%=err.active && 'has-error has-feedback'%>">
-                                                            <label for="image">Description</label>
-                                                            <textarea class="form-control" id="comment" name="description" rows="5">
-
-                                                            </textarea>
-                                                        </div>
-                                                    <div
-                                                            class="form-group <%=err.active && 'has-error has-feedback'%>">
-                                                            <label for="image">Infomation</label>
-                                                            <textarea class="form-control" id="comment" name="infomation" rows="5">
-
-                                                            </textarea>
-                                                        </div>
-                                                    <div
-                                                            class="form-group <%=err.active && 'has-error has-feedback'%>">
-                                                            <label for="categoryId">Loại sản phẩm</label>
-                                                            <select class="form-controll form-controll mb-4px" id="defaultSelect" name="categoryId">
-                                                                <% categories.forEach(function(category,index){ %>
-                                                                    <option value="<%=category._id%>" 
-                                                                        <% if(product?.categoryId?.toString() === category._id.toString()) { %>selected<% } %>>
-                                                                        <%=category.name%>
-                                                                    </option>
-                                                                <% }) %>
-                                                            </select>
-                                                        </div>
-                                                      
-                                                        
-                                                        
-
-                                                        <div class="card-action">
-                                                            <% if (mode==="Create" ) {%>
-                                                                <button class="btn btn-success"
-                                                                    type="submit">Tạo</button>
-                                                                <%}%>
-
-
-                                                                    <% if (mode==="Update" ) {%>
-                                                                        <button class="btn btn-success"
-                                                                            type="submit">cập nhật sản
-                                                                            phẩm</button>
-                                                                        <%}%>
-
-
-                                                                            <% if (mode==="Delete" ) {%>
-                                                                                <button class="btn btn-danger"
-                                                                                    type="submit">Xóa sản
-                                                                                    phẩm</button>
-                                                                                <%}%>
-
-                                                                                    <a href="/products"
-                                                                                        class="btn btn-primary">trở
-                                                                                        về
-                                                                                        trang chủ</a>
-                                                        </div>
-                                                </form>
-
+                            <!-- Action Buttons -->
+                            <div class="card-action text-right">
+                                <button class="btn btn-success" type="submit">
+                                    <i class="la la-check"></i> Tạo đơn hàng
+                                </button>
+                                <a href="/orders" class="btn btn-danger">
+                                    <i class="la la-times"></i> Hủy
+                                </a>
+                            </div>
+                        </form>
+                    </div>
                 </div>
-
             </div>
         </div>
     </div>
 </div>
+
+<style>
+.card-header {
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #eee;
+}
+.card-title {
+    margin-bottom: 0;
+    color: #333;
+}
+.form-control {
+    border-radius: 4px;
+    border: 1px solid #ddd;
+}
+.form-control:focus {
+    border-color: #4CAF50;
+    box-shadow: 0 0 0 0.2rem rgba(76, 175, 80, 0.25);
+}
+.btn {
+    border-radius: 4px;
+    padding: 8px 16px;
+}
+.btn-success {
+    background-color: #4CAF50;
+    border-color: #4CAF50;
+}
+.btn-danger {
+    background-color: #f44336;
+    border-color: #f44336;
+}
+.product-item {
+    background-color: #fff;
+    transition: all 0.3s ease;
+}
+.product-item:hover {
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+.card-action {
+    padding: 20px;
+    border-top: 1px solid #eee;
+}
+</style>

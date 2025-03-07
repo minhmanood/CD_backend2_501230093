@@ -1,5 +1,9 @@
 import express from 'express';
-import { listOrder, createOrder } from "../controller/orderController.js";
+import {
+  listOrder,
+  createOrder,
+  renderPageSimulateCreateProduct,
+} from "../controller/orderController.js";
 
 const router = express.Router();
 
@@ -7,6 +11,7 @@ const router = express.Router();
 router.get('/', listOrder);
 
 // Create order
+router.get("/create", renderPageSimulateCreateProduct);
 router.post("/create", createOrder);
 
 export default router;

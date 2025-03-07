@@ -1,4 +1,5 @@
 import OrderModel from "../models/orderModel.js";  // Thêm .js vào
+import ProductModel from "../models/productModel.js";  // Thêm .js vào
 import { ObjectId } from "mongodb";
 
 
@@ -40,7 +41,7 @@ export async function listOrder(req, res) {
 
     const countOrders = await OrderModel.countDocuments(filters);
     const orders = await OrderModel.find(filters)
-      .populate('categoryId')
+      
       .sort(sort)
       .skip(skip)
       .limit(pageSize);
@@ -60,51 +61,67 @@ export async function listOrder(req, res) {
   }
 }
 
-// export async function renderPageCreateProduct(req, res) {
-//   const categories=await CategoryModel.find({deletedAt:null})
-//   try {
+export async function renderPageSimulateCreateProduct(req, res) {
+      const products = await ProductModel.find({deletedAt:null})
+  try {
     
-//     res.render("pages/products/form", {
-//       title: "Create Product",
-//       mode: "Create",
-//       product: {},
-//       sizes,
-//       colors,
-//       categories:categories,
-//       err: {},
-//     });
-//   } catch (error) {
-//     console.error(error);
-//     res.send("Error loading create product page");
-//   }
-// }
+    res.render("pages/orders/form", {
+      title: "Create Orders",
+      mode: "Create",
+      order: {},
+      products:products,
+      err: {},
+    });
+  } catch (error) {
+    console.error(error);
+    res.send("Error loading create product page");
+  }
+}
 
-export const createOrder = async (req, res) => {
-    const {orderNo, discount, total, status, orderItems} = req.body;
-    try {
-        // Validate and convert productId to ObjectId
-        const validatedOrderItems = orderItems.map(item => ({
-            ...item,
-            productId: new ObjectId(item.productId)
-        }));
+export async function createOrder(req, res) {
+  try {
+    const { billingAddress, discount = 0, orderItems } = req.body;
+    let subTotal = 0,
+      total = 0;
 
-        const rs = await OrderModel.create({
-            orderNo,
-            discount,
-            total,
-            status,
-            orderItems: validatedOrderItems,
-            createdAt: new Date()
-        });
-        res.json(rs);
-    } catch (error) {
-        console.warn(error);
-        res.status(400).json({
-            success: false,
-            message: error.message || 'Tạo đơn hàng không thành công'
-        });
+    // Tìm và xử lý numericalOrder
+    const lastOrder = await OrderModel.findOne({}, { numericalOrder: 1 }).sort({
+      createdAt: -1,
+    });
+    const numericalOrder = lastOrder
+      ? parseInt(lastOrder.numericalOrder || 0) + 1
+      : 1;
+    const orderNo = `order-${numericalOrder}`;
+
+    // Tính tổng tiền
+    if (orderItems && orderItems.length > 0) {
+      for (let orderItem of orderItems) {
+        subTotal += Number(orderItem.quantity) * Number(orderItem.price);
+      }
     }
-};
+
+    // Tính giảm giá
+    total = (subTotal * (100 - Number(discount || 0))) / 100;
+
+    const rs = await OrderModel.create({
+      orderNo,
+      discount: Number(discount || 0),
+      total: Number(total),
+      status: "created",
+      orderItems,
+      numericalOrder: Number(numericalOrder),
+      billingAddress,
+      createdAt: new Date(),
+    });
+    res.json(rs);
+  } catch (error) {
+    console.warn(error);
+    res.status(400).json({
+      success: false,
+      message: error.message || "Tạo đơn hàng không thành công",
+    });
+  }
+}
 
 // export async function renderPageUpdateProduct(req, res) {
 //   try {
