@@ -1,0 +1,230 @@
+<div class="content">
+    <div class="container-fluid">
+        <h4 class="page-title">
+
+
+            <% if (mode==="Create" ) {%>
+                Tao san pham moi
+                <%}%>
+
+
+
+                    <% if (mode==="Update" ) {%>
+                        cap nhat san pham
+                        <%}%>
+
+
+
+                            <% if (mode==="Delete" ) {%>
+                                Bạn thật sự muốn xóa sản phẩm <%=category?.name%>
+                                    <%}%>
+
+
+
+        </h4>
+        <div class="card">
+            <div class="card">
+
+                <div class="card-body">
+                    <% if (mode==="Create" ) {%>
+                        <form action="/products/create" method="post">
+                            <%}%>
+
+
+                                <% if (mode==="Update" ) {%>
+                                    <form action="/products/update/<%=product?._id%>" method="post">
+                                        <!-- <div class="form-group hide">
+                                            <input name="id" type="text" value="<%=product?._id%>" id="id"
+                                                placeholder="Nhập mã sản phẩm ">
+                                        </div> -->
+                                        <%}%>
+
+
+
+                                            <% if (mode==="Delete" ) {%>
+                                                <form action="/products/delete/<%=product._id%>" method="post">
+                                                    <div class="form-group hide">
+                                                        <input name="id" type="text" value="<%=product?._id%>" id="id"
+                                                            placeholder="Nhập mã sản phẩm ">
+                                                    </div>
+                                                    <%}%>
+
+
+
+                                                        <div
+                                                            class="form-group <%=err?.code && 'has-error has-feedback'%> ">
+                                                            <label for="code">Mã sản phẩm </label>
+                                                            <input name="code" type="text" value="<%=product ?.code%>"
+                                                                class="form-control" id="code"
+                                                                placeholder="Nhập mã sản phẩm" <% if (mode==='Delete' )
+                                                                { %> disabled <% } %>>
+                                                                <small id="emailHelp"
+                                                                    class="form-text text-muted text-danger">
+                                                                    <%=err?.code%>
+                                                                </small>
+                                                        </div>
+                                                        <div
+                                                            class="form-group <%=err.name && 'has-error has-feedback'%>">
+                                                            <label for="name">Tên sản phẩm </label>
+                                                            <input value="<%=product?.name%>" name="name" type="text"
+                                                                class="form-control" id="name"
+                                                                placeholder="Nhập tên sản phẩm  " <% if (mode==='Delete'
+                                                                ) { %> disabled <% } %>
+
+                                                                >
+                                                                <small id="emailHelp"
+                                                                    class="form-text text-muted text-danger">
+                                                                    <%=err?.name%>
+                                                                </small>
+                                                        </div>
+                                                        <div
+                                                            class="form-group <%=err.searchString && 'has-error has-feedback'%>">
+                                                            <label for="searchString">Chuỗi tìm kiếm </label>
+                                                            <input value="<%=product?.searchString%>"
+                                                                name="searchString" type="text" class="form-control"
+                                                                id="name" placeholder="Nhập tên chuỗi tìm kím  " <% if
+                                                                (mode==='Delete' ) { %> disabled <% } %>
+
+                                                                >
+                                                                <small id="emailHelp"
+                                                                    class="form-text text-muted text-danger">
+                                                                    <%=err?.searchString%>
+                                                                </small>
+                                                        </div>
+                                                        <div
+                                                            class="form-group <%=err.price && 'has-error has-feedback'%>">
+                                                            <label for="price">Giá</label>
+                                                            <input value="<%=product?.price%>" name="price" type="number"
+                                                                class="form-control" id="price" placeholder="Nhập giá  "
+                                                                <% if (mode==='Delete' ) { %> disabled <% } %>
+
+                                                                >
+                                                                <small id="emailHelp"
+                                                                    class="form-text text-muted text-danger">
+                                                                    <%=err?.price%>
+                                                                </small>
+                                                        </div>
+                                                        <div
+                                                            class="form-group <%=err.image && 'has-error has-feedback'%>">
+                                                            <label for="image">Link hình ảnh </label>
+                                                            <input value="<%=product?.images?.[0] || ''%>" name="image" type="text"
+                                                                class="form-control" id="image"
+                                                                placeholder="Nhập link hình ảnh" <% if (mode==='Delete' ) {
+                                                                %> disabled <% } %>>
+                                                            <% if(product?.images?.[0]) { %>
+                                                            <img src="<%=product.images[0]%>" alt="<%=product.name%>" style="max-width: 200px; margin-top: 10px;">
+                                                            <% } %>
+                                                            <small id="emailHelp"
+                                                                class="form-text text-muted text-danger">
+                                                                <%=err?.image%>
+                                                            </small>
+                                                        </div>
+                                                        <div
+                                                            class="form-group <%=err.size && 'has-error has-feedback'%>">
+                                                            <label style="color: black;" for="">Size: </label>
+                                                            <% sizes.forEach(function(size,index){%>
+                                                                <label class="form-check-label">
+                                                                    <input class="form-check-input" type="checkbox"
+                                                                    name="sizes"
+                                                                        value="<%=size%>">
+                                                                    <span class="form-check-sign">
+                                                                        <%=size%>
+                                                                    </span>
+                                                                </label>
+
+                                                                <%}) %>
+
+
+                                                                    <small class="form-text text-muted text-danger">
+                                                                        <%=err?.size%>
+                                                                    </small>
+
+                                                        </div>
+                                                        <div
+                                                        class="form-group flex <%=err.color && 'has-error has-feedback'%>">
+                                                        <label>Màu sắc:</label>
+                                                        <div class="d-flex flex-wrap">
+                                                        <% colors.forEach(function(color,index){%>
+                                                            <label class="form-check-label">
+                                                                <input class="form-check-input" type="checkbox" name="color"
+                                                                    name="color" 
+                                                                    value="<%=color%>"
+                                                                    <% if(product?.color?.includes(color)) { %>checked<% } %>>
+                                                                <span class="product-checkbox-label bg-<%=color%>">
+                                                                    <%=color%>
+                                                                </span>
+                                                            </label>
+                                                            <%}) %>
+                                                        </div>
+                                                        <small class="form-text text-muted text-danger">
+                                                            <%=err?.color%>
+                                                        </small>
+                                                    </div>
+                                                    <div
+                                                            class="form-group <%=err.active && 'has-error has-feedback'%>">
+                                                            <label for="image">Active</label>
+                                                            <input type="checkbox" checked data-toggle="toggle" name="active" data-onstyle="default">
+                                                        </div>
+                                                    <div
+                                                            class="form-group <%=err.active && 'has-error has-feedback'%>">
+                                                            <label for="image">Description</label>
+                                                            <textarea class="form-control" id="comment" name="description" rows="5">
+
+                                                            </textarea>
+                                                        </div>
+                                                    <div
+                                                            class="form-group <%=err.active && 'has-error has-feedback'%>">
+                                                            <label for="image">Infomation</label>
+                                                            <textarea class="form-control" id="comment" name="infomation" rows="5">
+
+                                                            </textarea>
+                                                        </div>
+                                                    <div
+                                                            class="form-group <%=err.active && 'has-error has-feedback'%>">
+                                                            <label for="categoryId">Loại sản phẩm</label>
+                                                            <select class="form-controll form-controll mb-4px" id="defaultSelect" name="categoryId">
+                                                                <% categories.forEach(function(category,index){ %>
+                                                                    <option value="<%=category._id%>" 
+                                                                        <% if(product?.categoryId?.toString() === category._id.toString()) { %>selected<% } %>>
+                                                                        <%=category.name%>
+                                                                    </option>
+                                                                <% }) %>
+                                                            </select>
+                                                        </div>
+                                                      
+                                                        
+                                                        
+
+                                                        <div class="card-action">
+                                                            <% if (mode==="Create" ) {%>
+                                                                <button class="btn btn-success"
+                                                                    type="submit">Tạo</button>
+                                                                <%}%>
+
+
+                                                                    <% if (mode==="Update" ) {%>
+                                                                        <button class="btn btn-success"
+                                                                            type="submit">cập nhật sản
+                                                                            phẩm</button>
+                                                                        <%}%>
+
+
+                                                                            <% if (mode==="Delete" ) {%>
+                                                                                <button class="btn btn-danger"
+                                                                                    type="submit">Xóa sản
+                                                                                    phẩm</button>
+                                                                                <%}%>
+
+                                                                                    <a href="/products"
+                                                                                        class="btn btn-primary">trở
+                                                                                        về
+                                                                                        trang chủ</a>
+                                                        </div>
+                                                </form>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>

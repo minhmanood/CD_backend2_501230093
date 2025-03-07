@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+
+<%- include('../../layouts/head'); %>
+
+    <body>
+        <div class="wrapper">
+            <%- include('../../layouts/main-header'); %>
+            <%- include('../../layouts/sidebar'); %>
+                <div class="main-panel">
+                    <%- include('../../components/products/list'); %>
+                        <%- include('../../layouts/footer'); %>
+                </div>
+        </div>
+        <!-- Modal -->
+<%- include('../../components/common/modalCategory'); %>
+
+    </body>
+    <%- include('../../layouts/script/main'); %>
+    <%- include('../../layouts/script/listCategory.ejs'); %>
+
+</html>
