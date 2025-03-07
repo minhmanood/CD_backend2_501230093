@@ -7,8 +7,8 @@
                         <h4 class="card-title">
                             <i class="la la-shopping-cart"></i>
                             <% if (mode==="Create" ) {%>
-                                Tạo Đơn Hàng Mới
-                            <%}%>
+                                Giả lập Tạo Đơn Hàng Mới
+                                <%}%>
                         </h4>
                     </div>
 
@@ -19,10 +19,11 @@
                                 <div class="col-md-6">
                                     <div class="form-group <%=err?.discount && 'has-error'%>">
                                         <label for="discount">Mức Giảm Giá (%)</label>
-                                        <input name="discount" type="number" min="0" max="80" 
-                                            class="form-control" id="discount" 
-                                            placeholder="Nhập mức giảm giá (0-80)">
-                                        <small class="text-danger"><%=err?.discount%></small>
+                                        <input name="discount" type="number" min="0" max="80" class="form-control"
+                                            id="discount" placeholder="Nhập mức giảm giá (0-80)">
+                                        <small class="text-danger">
+                                            <%=err?.discount%>
+                                        </small>
                                     </div>
                                 </div>
                             </div>
@@ -35,38 +36,47 @@
                                 <div class="card-body">
                                     <div id="listProduct">
                                         <div class="product-item p-3 mb-3 border rounded">
-                                            <div class="row align-items-center">
+                                            <div class="row align-items-center orderItemGroup">
                                                 <div class="col-md-4">
-                                                    <select class="form-control" id="itemSelect" name="productSelect">
+                                                    <select class="form-control itemSelect" name="itemSelect">
                                                         <option value="">Chọn sản phẩm</option>
                                                         <% products.forEach(function(product){ %>
-                                                            <option value="<%=product._id%>-<%=product.name%>">
+                                                            <% console.log('Product in view:', product) %> <!-- Thêm log này -->
+                                                            <option value="<%=product._id%>"
+                                                                data-colors='<%- JSON.stringify(product.colors || []) %>'
+                                                                data-sizes='<%- JSON.stringify(product.sizes || []) %>'
+                                                                data-price="<%=product.price%>">
                                                                 <%=product.name%>
                                                             </option>
-                                                        <% }) %>
+                                                            <% }) %>
                                                     </select>
                                                 </div>
                                                 <div class="col-md-2">
-                                                    <input type="number" name="quantity" min="1"
-                                                        class="form-control" placeholder="Số lượng">
+                                                    <input type="number" name="quantity" min="1" class="form-control"
+                                                        placeholder="Số lượng">
                                                 </div>
                                                 <div class="col-md-2">
-                                                    <input type="text" name="itemPrice" 
-                                                        class="form-control" placeholder="Giá" disabled>
+                                                    <input type="text" name="itemPrice" class="form-control itemPrice"
+                                                        placeholder="Giá" disabled>
                                                 </div>
                                                 <div class="col-md-2">
-                                                    <select class="form-control" id="itemColor" name="itemColor">
+                                                    <select class="form-control itemColor" name="itemColor">
                                                         <option value="">Màu sắc</option>
                                                     </select>
                                                 </div>
                                                 <div class="col-md-2">
+                                                    <select class="form-control itemSize" name="itemSize">
+                                                        <option value=""></option>
+                                                    </select>
+                                                </div>
+                                                <div class="col-md-2">
                                                     <div class="btn-group">
-                                                        <button type="button" class="btn btn-success btn-sm">
+                                                        <div class="btn btn-success btn-sm" onclick="addNewOrderItem()">
                                                             <i class="la la-plus"></i>
-                                                        </button>
-                                                        <button type="button" class="btn btn-danger btn-sm">
+                                                        </div>
+                                                        <div class="btn btn-danger deleteOrderItem btn-sm">
                                                             <i class="la la-trash"></i>
-                                                        </button>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
@@ -80,63 +90,69 @@
                                 </div>
                                 <div class="card-body">
                                     <div id="billingAddress">
-                                        
+
                                         <div class="product-item p-3 mb-3 border rounded">
-                                          <div>
-                                            <label for="billingname">tên khách hàng</label>
-                                              <div class="row align-items-center">
-                                                <div class="col-md-2">
-                                                    <input type="text" name="billingname" min="1" class="form-control" placeholder="Nhập tên khách hàng "
-                                                        id="billingname">
-                                                </div>
-                                              </div>
-                                          </div>
-                                          <div class="mt-5">
-                                            <label for="billingEmail">Email</label>
-                                              <div class="row align-items-center">
-                                                <div class="col-md-2">
-                                                    <input type="text" name="billingEmail" min="1" class="form-control" placeholder="Nhập Email"
-                                                        id="billingEmail">
-                                                </div>
-                                              </div>
-                                          </div>
-                                          <div class="mt-5">
-                                            <label for="billingphoneNumber">Số điện thoại</label>
-                                              <div class="row align-items-center">
-                                                <div class="col-md-2">
-                                                    <input type="text" name="billingphoneNumber" min="1" class="form-control" placeholder="Nhập số điện thoại "
-                                                        id="billingphoneNumber">
-                                                </div>
-                                              </div>
-                                          </div>
-                                        <div class="mt-5">
-                                            <label for="billingAddress">Địa chỉ</label>
-                                            <div class="row align-items-center">
-                                                <div class="col-md-2">
-                                                    <input type="text" name="billingAddress" min="1" class="form-control" placeholder="Nhập Địa  chỉ  "
-                                                        id="billingAddress">
+                                            <div>
+                                                <label for="billingname">tên khách hàng</label>
+                                                <div class="row align-items-center">
+                                                    <div class="col-md-2">
+                                                        <input type="text" name="billingname" min="1"
+                                                            class="form-control" placeholder="Nhập tên khách hàng "
+                                                            id="billingname">
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                          <div class="mt-5">
-                                            <label for="billingDistrict">Quận/Huyện </label>
-                                              <div class="row align-items-center">
-                                                <div class="col-md-2">
-                                                    <input type="text" name="billingDistrict" min="1" class="form-control" placeholder="Nhập Quận/Huyện  "
-                                                        id="billingDistrict">
+                                            <div class="mt-5">
+                                                <label for="billingEmail">Email</label>
+                                                <div class="row align-items-center">
+                                                    <div class="col-md-2">
+                                                        <input type="text" name="billingEmail" min="1"
+                                                            class="form-control" placeholder="Nhập Email"
+                                                            id="billingEmail">
+                                                    </div>
                                                 </div>
-                                              </div>
-                                          </div>
-                                          <div class="mt-5">
-                                            <label for="billingCity">Thành Phố <label>
-                                              <div class="row align-items-center">
-                                                <div class="col-md-2">
-                                                    <input type="text" name="billingCity" min="1" class="form-control" placeholder="Nhập Thành Phố "
-                                                        id="billingCity">
+                                            </div>
+                                            <div class="mt-5">
+                                                <label for="billingphoneNumber">Số điện thoại</label>
+                                                <div class="row align-items-center">
+                                                    <div class="col-md-2">
+                                                        <input type="text" name="billingphoneNumber" min="1"
+                                                            class="form-control" placeholder="Nhập số điện thoại "
+                                                            id="billingphoneNumber">
+                                                    </div>
                                                 </div>
-                                              </div>
-                                          </div>
-                                          
+                                            </div>
+                                            <div class="mt-5">
+                                                <label for="billingAddress">Địa chỉ</label>
+                                                <div class="row align-items-center">
+                                                    <div class="col-md-2">
+                                                        <input type="text" name="billingAddress" min="1"
+                                                            class="form-control" placeholder="Nhập Địa  chỉ  "
+                                                            id="billingAddress">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="mt-5">
+                                                <label for="billingDistrict">Quận/Huyện </label>
+                                                <div class="row align-items-center">
+                                                    <div class="col-md-2">
+                                                        <input type="text" name="billingDistrict" min="1"
+                                                            class="form-control" placeholder="Nhập Quận/Huyện  "
+                                                            id="billingDistrict">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="mt-5">
+                                                <label for="billingCity">Thành Phố <label>
+                                                        <div class="row align-items-center">
+                                                            <div class="col-md-2">
+                                                                <input type="text" name="billingCity" min="1"
+                                                                    class="form-control" placeholder="Nhập Thành Phố "
+                                                                    id="billingCity">
+                                                            </div>
+                                                        </div>
+                                            </div>
+
                                         </div>
                                     </div>
                                 </div>
@@ -160,43 +176,52 @@
 </div>
 
 <style>
-.card-header {
-    background-color: #f8f9fa;
-    border-bottom: 1px solid #eee;
-}
-.card-title {
-    margin-bottom: 0;
-    color: #333;
-}
-.form-control {
-    border-radius: 4px;
-    border: 1px solid #ddd;
-}
-.form-control:focus {
-    border-color: #4CAF50;
-    box-shadow: 0 0 0 0.2rem rgba(76, 175, 80, 0.25);
-}
-.btn {
-    border-radius: 4px;
-    padding: 8px 16px;
-}
-.btn-success {
-    background-color: #4CAF50;
-    border-color: #4CAF50;
-}
-.btn-danger {
-    background-color: #f44336;
-    border-color: #f44336;
-}
-.product-item {
-    background-color: #fff;
-    transition: all 0.3s ease;
-}
-.product-item:hover {
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-}
-.card-action {
-    padding: 20px;
-    border-top: 1px solid #eee;
-}
+    .card-header {
+        background-color: #f8f9fa;
+        border-bottom: 1px solid #eee;
+    }
+
+    .card-title {
+        margin-bottom: 0;
+        color: #333;
+    }
+
+    .form-control {
+        border-radius: 4px;
+        border: 1px solid #ddd;
+    }
+
+    .form-control:focus {
+        border-color: #4CAF50;
+        box-shadow: 0 0 0 0.2rem rgba(76, 175, 80, 0.25);
+    }
+
+    .btn {
+        border-radius: 4px;
+        padding: 8px 16px;
+    }
+
+    .btn-success {
+        background-color: #4CAF50;
+        border-color: #4CAF50;
+    }
+
+    .btn-danger {
+        background-color: #f44336;
+        border-color: #f44336;
+    }
+
+    .product-item {
+        background-color: #fff;
+        transition: all 0.3s ease;
+    }
+
+    .product-item:hover {
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .card-action {
+        padding: 20px;
+        border-top: 1px solid #eee;
+    }
 </style>

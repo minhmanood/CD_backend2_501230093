@@ -62,7 +62,7 @@ export async function listOrder(req, res) {
 }
 
 export async function renderPageSimulateCreateProduct(req, res) {
-      const products = await ProductModel.find({deletedAt:null})
+      const products = await ProductModel.find({deletedAt:null},"code nam price size color ")
   try {
     
     res.render("pages/orders/form", {

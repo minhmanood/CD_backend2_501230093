@@ -1,7 +1,6 @@
 import mongoose from "mongoose";
 const { Schema } = mongoose;
-const productSchema = new Schema(
-  {
+const productSchema = new Schema({
     code: {
       type: String,
       required: [true, "Bắt buộc phải nhập mã sản phẩm"],
@@ -14,11 +13,13 @@ const productSchema = new Schema(
       required: [true, "Bắt buộc phải nhập giá sản phẩm"],
       type: Number,
     },
-    size: {
+    // Sửa từ 'size' thành 'sizes'
+    sizes: {
       type: [String],
       enum: ["S", "M", "L", "XL"],
     },
-    color: {
+    // Sửa từ 'color' thành 'colors'
+    colors: {
       type: [String],
       enum: ["red", "green", "blue", "yellow", "purple", "brown", "white", "black"],
     },
@@ -41,5 +42,4 @@ const productSchema = new Schema(
   }
 );
 
-const ProductModel = mongoose.model("Product", productSchema);
-export default ProductModel;
+export default mongoose.model("Product", productSchema);

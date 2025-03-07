@@ -1,0 +1,91 @@
+<script>
+    function addNewOrderItem() {
+        $("#listProduct").append(`
+        <div class="product-item p-3 mb-3 border rounded">
+            <div class="row align-items-center orderItemGroup">
+                <div class="col-md-4">
+                    <select class="form-control itemSelect" name="itemSelect">
+                        <option value="">Chọn sản phẩm</option>
+                        <% products.forEach(function(product){ %>
+                            <option value="<%=product._id%>" 
+                                data-colors='<%=JSON.stringify(product.colors || [])%>'
+                                data-sizes='<%=JSON.stringify(product.sizes || [])%>'
+                                data-price="<%=product.price%>">
+                                <%=product.name%>
+                            </option>
+                        <% }) %>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <input type="number" name="quantity" min="1" class="form-control" placeholder="Số lượng">
+                </div>
+                <div class="col-md-2">
+                    <input type="text" name="itemPrice" class="form-control itemPrice" placeholder="Giá" disabled>
+                </div>
+                <div class="col-md-2">
+                    <select class="form-control itemColor" name="itemColor">
+                        <option value="">Màu sắc</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <select class="form-control itemSize" name="itemSize">
+                        <option value="">Kích thước</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <div class="btn-group">
+                        <div class="btn btn-success btn-sm" onclick="addNewOrderItem()">
+                            <i class="la la-plus"></i>
+                        </div>
+                        <div class="btn btn-danger deleteOrderItem btn-sm">
+                            <i class="la la-trash"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>`);
+        addSelectData();  // Thay thế handleProductSelect() bằng addSelectData()
+        removeOrderItem();
+    }
+
+    function removeOrderItem() {
+        $(".deleteOrderItem").click(function() {
+            $(this).parent().remove();
+        });
+    }
+    removeOrderItem();
+    function addSelectData() {
+        $(".itemSelect").change(function() {
+            const selectedProduct = $(this).find(":selected");
+            try {
+                const sizesData = JSON.parse(selectedProduct.attr("data-sizes"));
+                const colorData = JSON.parse(selectedProduct.attr("data-colors"));
+                const price = selectedProduct.attr("data-price");
+    
+                const orderItemGroup = $(this).closest(".orderItemGroup");
+                const sizeSelect = orderItemGroup.find(".itemSize");
+                const colorSelect = orderItemGroup.find(".itemColor");
+                const priceInput = orderItemGroup.find(".itemPrice");
+    
+                sizeSelect.empty().append(`<option value="">Chọn size</option>`);
+                if (sizesData && sizesData.length > 0) {
+                    sizesData.forEach(size => {
+                        sizeSelect.append(`<option value="${size}">${size}</option>`);
+                    });
+                }
+    
+                colorSelect.empty().append(`<option value="">Chọn màu</option>`);
+                if (colorData && colorData.length > 0) {
+                    colorData.forEach(color => {
+                        colorSelect.append(`<option value="${color}">${color}</option>`);
+                    });
+                }
+    
+                priceInput.val(price);
+            } catch (error) {
+                console.error("Error parsing data:", error);
+            }
+        });
+    }
+    addSelectData();
+</script>
